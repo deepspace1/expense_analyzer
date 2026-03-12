@@ -1,0 +1,61 @@
+name,description,amount,date
+Swiggy,Food Delivery - Lunch,450,2024-01-15
+Zomato,Food Delivery - Dinner,320,2024-01-16
+Starbucks,Coffee & Pastry,250,2024-01-17
+Cafe Coffee Day,Morning Coffee,120,2024-01-18
+KFC,Dinner,650,2024-01-19
+Dominos,Pizza Order,500,2024-01-20
+Amazon,Headphones,3500,2024-01-16
+Flipkart,T-Shirts,1200,2024-01-18
+H&M,Clothes & Accessories,2800,2024-01-19
+Myntra,Shoes,1500,2024-01-21
+Uber,Taxi Ride to Office,250,2024-01-17
+Uber,Evening Travel Home,180,2024-01-17
+Ola,Ride to Airport,320,2024-01-22
+Metro Card,Monthly Pass,500,2024-01-01
+Petrol Pump,Fuel,2000,2024-01-10
+Netflix,Monthly Subscription,499,2024-01-10
+Spotify,Music Streaming,119,2024-01-10
+Amazon Prime,Annual Membership,499,2024-01-15
+Gym Membership,Monthly Fee,1500,2024-01-01
+YouTube Premium,Streaming,129,2024-01-01
+Apollo Hospital,Medical Checkup,2500,2024-01-12
+Pharmacy,Medicines,450,2024-01-14
+Dentist,Dental Checkup,800,2024-01-20
+Eye Care,Glasses,3200,2024-01-16
+Electricity Bill,Monthly Charge,2500,2024-01-01
+Water Bill,Monthly Charge,800,2024-01-01
+Internet Bill,Broadband,1200,2024-01-01
+Mobile Recharge,Mobile Plan,599,2024-01-05
+Insurance Premium,Health Insurance,5000,2024-01-01
+Mutual Fund,SIP Investment,10000,2024-01-10
+Stock Trading,Share Purchase,15000,2024-01-12
+Bank Transfer,Savings,25000,2024-01-15
+Movie Ticket,Cinema,400,2024-01-18
+Concert Ticket,Music Festival,1200,2024-01-20
+Gaming Subscription,PlayStation Plus,299,2024-01-01
+Book Store,Technical Books,1500,2024-01-14
+Online Course,Udemy Course,500,2024-01-16
+Udacity,Nanodegree,15000,2024-01-20
+Flight Ticket,Business Trip,25000,2024-01-05
+Hotel,3 Nights Stay,18000,2024-01-06
+Travel Package,Tour Booking,45000,2024-01-12
+Swiggy,Food Delivery - Lunch,450,2024-02-10
+Zomato,Food Delivery - Dinner,380,2024-02-11
+Uber,Taxi Ride,200,2024-02-12
+Netflix,Monthly Subscription,499,2024-02-10
+Amazon,Office Supplies,2000,2024-02-14
+Flipkart,Clothing,1500,2024-02-15
+Gym,Monthly Fee,1500,2024-02-01
+Electricity,Monthly Bill,2600,2024-02-01
+Hospital,Doctor Visit,1200,2024-02-18
+Pharmacy,Medicines,350,2024-02-19
+Movie Ticket,Cinema,400,2024-02-20
+Swiggy,Lunch Order,500,2024-03-01
+Amazon,Laptop Accessories,8500,2024-03-02
+Uber,Airport Ride,450,2024-03-03
+Netflix,Subscription,499,2024-03-10
+Gym,Monthly Membership,1500,2024-03-01
+Hospital,Emergency Visit,5000,2024-03-15
+Electric Bill,Monthly,2700,2024-03-01
+Zomato,Dinner,400,2024-03-20
