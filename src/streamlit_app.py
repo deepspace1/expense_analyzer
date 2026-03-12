@@ -478,46 +478,14 @@ def render_analysis_ui(result: dict) -> None:
             display_df["category"] = ""
         st.dataframe(display_df, use_container_width=True)
 
-# Sidebar controls for starting/stopping local backend
-if "backend_pid" not in st.session_state:
-    st.session_state.backend_pid = None
+# Note: Local backend controls are only for local development
+# On Streamlit Cloud, configure the remote backend URL in Settings tab
 
-with st.sidebar.expander("Local Backend (start/stop)"):
-    col_a, col_b = st.columns(2)
-    with col_a:
-        if st.button("Start Backend"):
-            if st.session_state.backend_pid and is_pid_running(st.session_state.backend_pid):
-                st.info(f"Backend already running (pid={st.session_state.backend_pid})")
-            else:
-                try:
-                    pid = start_local_backend()
-                    st.session_state.backend_pid = pid
-                    st.success(f"Started backend (pid={pid}). Check logs: backend.log")
-                    # small wait then recheck health
-                    time.sleep(1)
-                except Exception as e:
-                    st.error(f"Failed to start backend: {e}")
-    with col_b:
-        if st.button("Stop Backend"):
-            pid = st.session_state.get("backend_pid")
-            if pid and is_pid_running(pid):
-                stop_local_backend(pid)
-                st.session_state.backend_pid = None
-                st.success(f"Stopped backend (pid={pid})")
-            else:
-                st.info("No local backend process found")
-
-    # show status
-    pid = st.session_state.get("backend_pid")
-    if pid and is_pid_running(pid):
-        st.write(f"Local backend running (pid={pid})")
-    else:
-        st.write("Local backend not running")
-
-# Check API health
-def check_api_health(retries=2):
-    """Check API health with retries."""
-    for attempt in range(retries):
+# Cache the API health check for 30 seconds to avoid repeated calls
+@st.cache_data(ttl=30, show_spinner=False)
+def check_api_health_cached():
+    """Check API health with caching to speed up page loads."""
+    for attempt in range(2):
         try:
             # Use session state for API URL and key
             api_url = st.session_state.get("api_base_url", "http://localhost:8000")
@@ -541,19 +509,19 @@ def check_api_health(retries=2):
             pass
 
         # Small delay before retry
-        if attempt < retries - 1:
+        if attempt < 1:
             time.sleep(0.5)
 
     return False
 
-# Check API health with retry logic
-api_healthy = check_api_health(retries=3)
+# Check API health (cached for 30 seconds)
+api_healthy = check_api_health_cached()
 
-# Show status with auto-refresh info
+# Show status
 if api_healthy:
     st.sidebar.success("✅ API Connected")
 else:
-    st.sidebar.error("❌ API Disconnected - Attempting to reconnect...")
+    st.sidebar.warning("⚠️ API Not Connected - Check Settings")
 
 # Main content
 st.title("💰 Expense AI Assistant")
