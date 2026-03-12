@@ -20,8 +20,8 @@ COPY data/ ./data/
 # Create logs directory
 RUN mkdir -p logs
 
-# Expose ports: 8000 for FastAPI, 8501 for Streamlit
-EXPOSE 8000 8501
+# Expose port 8000 for FastAPI backend
+EXPOSE 8000
 
-# Default command runs both services
-CMD ["sh", "-c", "cd src && python -m uvicorn main:app --host 0.0.0.0 --port 8000 & streamlit run streamlit_app.py --server.port=8501 --server.address=0.0.0.0"]
+# Run only the backend API
+CMD ["sh", "-c", "cd src && python -m uvicorn main:app --host 0.0.0.0 --port 8000"]
