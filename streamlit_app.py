@@ -98,39 +98,8 @@ if "groq_api_key" not in st.session_state:
 API_BASE_URL = st.session_state.api_base_url
 GROQ_API_KEY_INPUT = st.session_state.groq_api_key
 
-# Sidebar quick actions: show configured backend and allow a health check
-with st.sidebar.expander("Backend Configuration", expanded=True):
-    # Hide the backend URL when it's provided via Streamlit secrets or env vars for security.
-    is_configured = bool(secrets_api or env_api)
-    if is_configured:
-        st.write("**Backend URL:** Configured (hidden)")
-        if st.checkbox("Show backend URL", value=False, key="reveal_backend_url"):
-            st.code(API_BASE_URL)
-    else:
-        st.write("**Backend URL (not configured):**")
-        # Allow quick override in the UI for testing (this will persist in session only)
-        new_val = st.text_input("Backend URL", value=API_BASE_URL, key="api_base_url_input")
-        if new_val and new_val != st.session_state.api_base_url:
-            st.session_state.api_base_url = new_val
-
-    if st.button("Test backend /health"):
-        try:
-            resp = requests.get(f"{st.session_state.api_base_url}/health", timeout=6)
-            if resp.status_code == 200:
-                st.success("Backend reachable: /health returned 200")
-                # show response JSON but do not re-print the backend URL
-                try:
-                    st.json(resp.json())
-                except Exception:
-                    st.write(resp.text)
-            else:
-                st.error(f"Backend returned status {resp.status_code}")
-                try:
-                    st.write(resp.text)
-                except Exception:
-                    pass
-        except Exception as e:
-            st.error(f"Error reaching backend: {e}")
+# No backend configuration UI: backend URL and keys are loaded from Streamlit secrets or environment variables only.
+# This intentionally does not expose the backend URL or API keys in the app UI.
 
 # Backend control utilities (start/stop local FastAPI)
 PROJECT_DIR = os.path.dirname(__file__)
