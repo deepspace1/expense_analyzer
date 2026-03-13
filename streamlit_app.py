@@ -70,15 +70,67 @@ st.markdown("""
 # Sidebar - Configuration (only backend control, settings moved to tabs)
 st.sidebar.title("⚙️ Configuration")
 
-# Initialize session state for API settings (loaded from env or persisted in session)
+# Initialize session state for API settings (loaded from Streamlit secrets, env, or persisted in session)
+# Priority: Streamlit `st.secrets` -> environment variables `API_BASE_URL` / `BACKEND_URL` and `GROQ_API_KEY` -> sensible defaults
+secrets_api = None
+secrets_groq = None
+try:
+    secrets_api = st.secrets.get("API_BASE_URL") if isinstance(st.secrets, dict) or hasattr(st.secrets, 'get') else None
+    secrets_groq = st.secrets.get("GROQ_API_KEY") if isinstance(st.secrets, dict) or hasattr(st.secrets, 'get') else None
+except Exception:
+    secrets_api = None
+    secrets_groq = None
+
+env_api = os.getenv("API_BASE_URL") or os.getenv("BACKEND_URL")
+env_groq = os.getenv("GROQ_API_KEY")
+
+default_api = "http://localhost:8000"
+
+api_choice = secrets_api or env_api or default_api
+groq_choice = secrets_groq or env_groq or ""
+
 if "api_base_url" not in st.session_state:
-    st.session_state.api_base_url = os.getenv("API_BASE_URL", "http://localhost:8000")
+    st.session_state.api_base_url = api_choice
 if "groq_api_key" not in st.session_state:
-    st.session_state.groq_api_key = os.getenv("GROQ_API_KEY", "")
+    st.session_state.groq_api_key = groq_choice
 
 # Simplified sidebar (backend control only)
 API_BASE_URL = st.session_state.api_base_url
 GROQ_API_KEY_INPUT = st.session_state.groq_api_key
+
+# Sidebar quick actions: show configured backend and allow a health check
+with st.sidebar.expander("Backend Configuration", expanded=True):
+    # Hide the backend URL when it's provided via Streamlit secrets or env vars for security.
+    is_configured = bool(secrets_api or env_api)
+    if is_configured:
+        st.write("**Backend URL:** Configured (hidden)")
+        if st.checkbox("Show backend URL", value=False, key="reveal_backend_url"):
+            st.code(API_BASE_URL)
+    else:
+        st.write("**Backend URL (not configured):**")
+        # Allow quick override in the UI for testing (this will persist in session only)
+        new_val = st.text_input("Backend URL", value=API_BASE_URL, key="api_base_url_input")
+        if new_val and new_val != st.session_state.api_base_url:
+            st.session_state.api_base_url = new_val
+
+    if st.button("Test backend /health"):
+        try:
+            resp = requests.get(f"{st.session_state.api_base_url}/health", timeout=6)
+            if resp.status_code == 200:
+                st.success("Backend reachable: /health returned 200")
+                # show response JSON but do not re-print the backend URL
+                try:
+                    st.json(resp.json())
+                except Exception:
+                    st.write(resp.text)
+            else:
+                st.error(f"Backend returned status {resp.status_code}")
+                try:
+                    st.write(resp.text)
+                except Exception:
+                    pass
+        except Exception as e:
+            st.error(f"Error reaching backend: {e}")
 
 # Backend control utilities (start/stop local FastAPI)
 PROJECT_DIR = os.path.dirname(__file__)
