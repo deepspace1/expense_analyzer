@@ -795,25 +795,6 @@ with tab3:
 # ============================================================================
 with tab_settings:
     st.header("⚙️ Configuration & API Keys")
-    
-    st.write("Configure your API settings for this session. Settings are stored locally in your browser session.")
-    
-    st.divider()
-    
-    # API Base URL
-    st.subheader("🔗 API Backend")
-    api_url = st.text_input(
-        "API Base URL",
-        value=st.session_state.api_base_url,
-        help="The FastAPI backend URL. Default: http://localhost:8000",
-        placeholder="http://localhost:8000"
-    )
-    if api_url != st.session_state.api_base_url:
-        st.session_state.api_base_url = api_url
-        st.success("✅ API URL updated")
-    
-    st.divider()
-    
     # Groq API Key
     st.subheader("🔑 Groq API Key")
     st.write("""
@@ -837,49 +818,9 @@ with tab_settings:
     
     st.divider()
     
-    # Backend Status
-    st.subheader("📊 Backend Status")
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        if st.button("🔄 Check Health", use_container_width=True):
-            try:
-                response = requests.get(f"{st.session_state.api_base_url}/health", timeout=5)
-                if response.status_code == 200:
-                    health = response.json()
-                    st.success(f"✅ Backend healthy")
-                    st.json(health)
-                else:
-                    st.error(f"❌ Backend returned {response.status_code}")
-            except Exception as e:
-                st.error(f"❌ Cannot reach backend: {e}")
-    
-    with col2:
-        if st.button("🚀 Start Backend", use_container_width=True):
-            if not api_healthy:
-                try:
-                    pid = start_local_backend()
-                    st.success(f"✅ Backend started (PID: {pid})")
-                    time.sleep(2)
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Failed to start backend: {e}")
-            else:
-                st.info("Backend is already running")
-    
-    with col3:
-        if st.button("⏹️ Stop Backend", use_container_width=True):
-            if "backend_pid" in st.session_state and st.session_state.backend_pid:
-                try:
-                    stop_local_backend()
-                    st.success("✅ Backend stopped")
-                    time.sleep(1)
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Failed to stop backend: {e}")
-            else:
-                st.info("No local backend running")
-    
+    # Note: Backend URL and credentials are loaded from environment variables or Streamlit secrets.
+    # For security, the backend URL is not exposed or editable via the UI.
+    st.info("Backend configuration and secrets are managed outside the UI (environment vars or Streamlit secrets).")
     st.divider()
     
     # Deployment guide
@@ -895,9 +836,9 @@ with tab_settings:
        - Set `GROQ_API_KEY` environment variable OR have users provide it via UI
        - Run: `python main.py` (or via `uvicorn main:app --host 0.0.0.0 --port 8000`)
     
-    3. **Frontend Configuration:**
-       - Run: `streamlit run streamlit_app.py`
-       - Users configure API URL & key in the Settings tab
+     3. **Frontend Configuration:**
+         - Run: `streamlit run streamlit_app.py`
+         - The frontend reads the backend URL and API key from environment variables or Streamlit secrets (do not store keys in the UI).
     
     4. **Docker Deployment:**
        ```bash
